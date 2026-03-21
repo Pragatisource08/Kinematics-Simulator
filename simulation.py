@@ -1,4 +1,5 @@
 from motion import Motion 
+from visualizer import plot_journey
 
 class Simulation:
     def __init__(self):
@@ -39,3 +40,4 @@ for i in range (n):
 
 m=Motion(sim.total_distance(),sim.total_time(),0,sim.total_time(),0,sim.total_displacement())
 m.summary()
+plot_journey(sim)
