@@ -1,30 +1,6 @@
-#Matplotlib Graph
-#import matplotlib.pyplot as plt
-#def plot_journey(sim):
- #   time_points=[0]
-  #  position_point=[0]
-   # distance_point=[0]
-   # for segment in sim.segments:
-   # time_points.append(time_points[-1]+segment['time'])
-  #      position_point.append(position_point[-1]+segment['distance']*segment['direction'])
-#        distance_point.append(distance_point[-1]+segment['distance'])
- #   #average velocity graph    
-  #  plt.plot(time_points ,position_point,marker='o')
-   # plt.title("Displacement vs Time")
-   # plt.xlabel('Time(s)')
-    #plt.ylabel('Displacement(m)')
-  #  plt.grid(True)
-   # plt.show()
-
-    #average speed graph
- #   plt.plot(time_points,distance_point,marker='o')
-  #  plt.title("Distance vs Time")
-   # plt.xlabel('Time(s)')
- #   plt.ylabel('Distance(m)')
-
-
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.gridspec as gridspec
 from matplotlib.animation import FuncAnimation
 
 def animate_journey(sim):
@@ -33,53 +9,85 @@ def animate_journey(sim):
 
     position=[]
     distances=[]
+    velocities=[]
+    speeds=[]
+
     for t in times:
         pos=0
         dist=0
         elapsed=0
+        velocity=0
+        speed=0
         for segment in sim.segments:
             if t>=elapsed+segment['time']:
                 pos+=segment['distance']*segment['direction']
+                velocity = segment['distance'] / segment['time'] * segment['direction']
+                speed = segment['distance'] / segment['time']
                 elapsed+=segment['time']
                 dist+=segment['distance']
             else:
                 time_into_segment = t - elapsed
                 speed = segment['distance'] / segment['time']
                 pos += speed * segment['direction'] * time_into_segment
+                velocity = segment['distance'] / segment['time'] * segment['direction']
                 dist += speed * time_into_segment
                 break
         position.append(pos)        
         distances.append(dist)
-
-        
-
-    fig, ((ax1,ax2),(ax3,ax3)) = plt.subplots(2,2,figsize=(14,8))
-
-    ax1.set_xlim(min(position)-10,max(position)+10)
-    ax1.set_ylim(-1,1)
-    ax1.set_title('Object Motion')
-    ax1.set_xlabel('Position(m)')
-    dot,=ax1.plot([],[],'bo', markersize=15)
-
-    ax2.set_xlim(0,total_time)
-    ax2.set_ylim(min(position)-10,max(position)+10)
-    ax2.set_title('Displacement vs Time')
-    ax2.set_xlabel('Time(sec)')
-    ax2.set_ylabel('Displacement(m)')
-    line,=ax2.plot([],[],'g-')
+        velocities.append(velocity)
+        speeds.append(speed)
     
-    ax3.set_xlim(0,total_time)
-    ax3.set_ylim(0,sim.total_distance()+10)
-    ax3.set_title('Distance vs Time')
-    ax3.set_xlabel('Time(sec)')
-    ax3.set_ylabel('Distance(m)')
-    line1,=ax3.plot([],[],'g-')
+    fig = plt.figure(figsize=(14,8))
+    gs=gridspec.GridSpec(3,2,figure=fig)
+    ax_dot = fig.add_subplot(gs[0,:])
+    ax_disp=fig.add_subplot(gs[1,0])
+    ax_dist=fig.add_subplot(gs[1,1])
+    ax_vel =fig.add_subplot(gs[2,0])
+    ax_spd =fig.add_subplot(gs[2,1])
 
+
+
+    ax_dot.set_xlim(min(position)-10,max(position)+10)
+    ax_dot.set_ylim(-1,1)
+    ax_dot.set_title('Object Motion')
+    ax_dot.set_xlabel('Position(m)')
+    dot,=ax_dot.plot([],[],'bo', markersize=15)
+
+    ax_disp.set_xlim(0,total_time)
+    ax_disp.set_ylim(min(position)-10,max(position)+10)
+    ax_disp.set_title('Displacement vs Time')
+    ax_disp.set_xlabel('Time(sec)')
+    ax_disp.set_ylabel('Displacement(m)')
+    line,=ax_disp.plot([],[],'g-')
+    
+    ax_dist.set_xlim(0,total_time)
+    ax_dist.set_ylim(0,sim.total_distance()+10)
+    ax_dist.set_title('Distance vs Time')
+    ax_dist.set_xlabel('Time(sec)')
+    ax_dist.set_ylabel('Distance(m)')
+    line1,=ax_dist.plot([],[],'g-')
+
+    ax_vel.set_xlim(0,total_time)
+    ax_vel.set_ylim(min(velocities)-5,max(velocities)+5)
+    ax_vel.set_title('Velocity vs Time')
+    ax_vel.set_xlabel('Time(sec)')
+    ax_vel.set_ylabel('Velocity(m/s)')
+    line2,=ax_vel.plot([],[],'g-')
+
+    ax_spd.set_xlim(0,total_time)
+    ax_spd.set_ylim(0,max(speeds)+10)
+    ax_spd.set_title('Speed vs Time')
+    ax_spd.set_xlabel('Time(sec)')
+    ax_spd.set_ylabel('Speed(m/s)')
+    line3,=ax_spd.plot([],[],'g-')
+   
     def update(frame):
         dot.set_data([position[frame]],[0])
         line.set_data(times[:frame],position[:frame])
         line1.set_data(times[:frame],distances[:frame])
-        return dot ,line,line1
+        line2.set_data(times[:frame],velocities[:frame])
+        line3.set_data(times[:frame],speeds[:frame])
+        return dot ,line,line1,line2,line3
 
     ani=FuncAnimation(fig,update,frames=100,interval=50,blit=True)
     plt.tight_layout()
