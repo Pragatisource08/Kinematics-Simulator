@@ -39,6 +39,7 @@ def animate_journey(sim):
     
     fig = plt.figure(figsize=(14,8))
     gs=gridspec.GridSpec(3,2,figure=fig)
+
     ax_dot = fig.add_subplot(gs[0,:])
     ax_disp=fig.add_subplot(gs[1,0])
     ax_dist=fig.add_subplot(gs[1,1])
@@ -80,6 +81,10 @@ def animate_journey(sim):
     ax_spd.set_xlabel('Time(sec)')
     ax_spd.set_ylabel('Speed(m/s)')
     line3,=ax_spd.plot([],[],'g-')
+
+    stats_text=fig.text(0.5 , 0.01 ,' ', fontsize=10 , ha='center',
+    bbox=dict(boxstyle='round',facecolor='lightblue',edgecolor='black',alpha=0.8))
+
    
     def update(frame):
         dot.set_data([position[frame]],[0])
@@ -87,8 +92,17 @@ def animate_journey(sim):
         line1.set_data(times[:frame],distances[:frame])
         line2.set_data(times[:frame],velocities[:frame])
         line3.set_data(times[:frame],speeds[:frame])
-        return dot ,line,line1,line2,line3
+        t_now = times[frame]
+        avg_velocity = position[frame] / t_now if t_now > 0 else 0
+        avg_speed = distances[frame] / t_now if t_now > 0 else 0
+        flag = abs(position[frame]) < 0.5 and distances[frame] > 0
+        stats_text.set_text(f"Time: {times[frame]:.2f}s | Position: {position[frame]:.2f}m | Velocity: {velocities[frame]:.2f} m/s\n"
+             f"Avg Velocity so far: {avg_velocity:.2f} m/s | Avg Speed so far: {avg_speed:.2f} m/s\n"
+        f"{'Returned near origin ⚡' if flag else ''}")
 
-    ani=FuncAnimation(fig,update,frames=100,interval=50,blit=True)
+             
+        return dot ,line,line1,line2,line3,stats_text
+
+    ani=FuncAnimation(fig,update,frames=100,interval=50,blit=False)
     plt.tight_layout()
     plt.show()
