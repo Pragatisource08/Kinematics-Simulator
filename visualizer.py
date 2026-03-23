@@ -38,6 +38,7 @@ def animate_journey(sim):
         speeds.append(speed)
     
     fig = plt.figure(figsize=(14,8))
+    fig.patch.set_facecolor('black')
     gs=gridspec.GridSpec(3,2,figure=fig)
 
     ax_dot = fig.add_subplot(gs[0,:])
@@ -81,6 +82,47 @@ def animate_journey(sim):
     ax_spd.set_xlabel('Time(sec)')
     ax_spd.set_ylabel('Speed(m/s)')
     line3,=ax_spd.plot([],[],'g-')
+
+
+    ax_dot.set_facecolor('black')
+    ax_dot.tick_params(colors='white')
+    ax_dot.title.set_color('white')
+    ax_dot.xaxis.label.set_color('white')
+    ax_dot.yaxis.label.set_color('white')
+    for spine in ax_dot.spines.values():
+        spine.set_edgecolor('white')
+
+    ax_disp.set_facecolor('black')
+    ax_disp.tick_params(colors='white')
+    ax_disp.title.set_color('white')
+    ax_disp.xaxis.label.set_color('white')
+    ax_disp.yaxis.label.set_color('white')
+    for spine in ax_disp.spines.values():
+        spine.set_edgecolor('white')
+
+    ax_dist.set_facecolor('black')
+    ax_dist.tick_params(colors='white')
+    ax_dist.title.set_color('white')
+    ax_dist.xaxis.label.set_color('white')
+    ax_dist.yaxis.label.set_color('white')
+    for spine in ax_dist.spines.values():
+        spine.set_edgecolor('white')
+
+    ax_vel.set_facecolor('black')
+    ax_vel.tick_params(colors='white')
+    ax_vel.title.set_color('white')
+    ax_vel.xaxis.label.set_color('white')
+    ax_vel.yaxis.label.set_color('white')
+    for spine in ax_vel.spines.values():
+        spine.set_edgecolor('white')
+
+    ax_spd.set_facecolor('black')
+    ax_spd.tick_params(colors='white')
+    ax_spd.title.set_color('white')
+    ax_spd.xaxis.label.set_color('white')
+    ax_spd.yaxis.label.set_color('white')
+    for spine in ax_spd.spines.values():
+        spine.set_edgecolor('white')
 
     stats_text=fig.text(0.5 , 0.01 ,' ', fontsize=10 , ha='center',
     bbox=dict(boxstyle='round',facecolor='lightblue',edgecolor='black',alpha=0.8))
