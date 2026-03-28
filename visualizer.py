@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.gridspec as gridspec
 from matplotlib.animation import FuncAnimation
+from matplotlib.widgets import Button
 
 def animate_journey(sim):
     total_time=sim.total_time()
@@ -40,6 +41,8 @@ def animate_journey(sim):
     fig = plt.figure(figsize=(14,8))
     fig.patch.set_facecolor('black')
     gs=gridspec.GridSpec(3,2,figure=fig)
+    ax_button = plt.axes([0.45,0.35,0.1,0.04])
+    btn = Button(ax_button, 'Pause')
 
     ax_dot = fig.add_subplot(gs[0,:])
     ax_disp=fig.add_subplot(gs[1,0])
@@ -127,6 +130,7 @@ def animate_journey(sim):
     stats_text=fig.text(0.5 , 0.01 ,' ', fontsize=10 , ha='center',
     bbox=dict(boxstyle='round',facecolor='lightblue',edgecolor='black',alpha=0.8))
 
+
    
     def update(frame):
         dot.set_data([position[frame]],[0])
@@ -146,5 +150,18 @@ def animate_journey(sim):
         return dot ,line,line1,line2,line3,stats_text
 
     ani=FuncAnimation(fig,update,frames=100,interval=50,blit=False)
+    
+    is_running=[True]
+    def toggle (event):
+        if is_running[0]:
+            ani.pause()
+            btn.label.set_text('Play')
+        else:
+            ani.resume()
+            btn.label.set_text('Pause')
+        is_running[0]=not is_running[0]        
+    btn.on_clicked(toggle)
+   
+
     plt.tight_layout()
     plt.show()
