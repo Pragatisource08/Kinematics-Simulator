@@ -1,3 +1,4 @@
+
 # 🚀 Kinematics Simulator
 
 A Python-based kinematics simulator that models multi-segment 1D motion and produces live animated visualizations of an object's journey — complete with real-time plots for displacement, distance, velocity, and speed.
@@ -8,7 +9,7 @@ A Python-based kinematics simulator that models multi-segment 1D motion and prod
 
 Kinematics Simulator lets you define a journey in multiple segments (each with its own distance, direction, and duration), computes the core physics quantities, and then animates the entire trip using **Matplotlib**. It is a great tool for physics students, educators, or anyone who wants to visualize 1D motion concepts interactively.
 
----
+---s
 
 ## ✨ Features
 
